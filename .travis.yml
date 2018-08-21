@@ -1,4 +1,25 @@
+
+sudo: required
 language: java
-branches:
-  except:
-  - travis
+
+jdk:
+  - oraclejdk8
+
+script:
+  - mvn clean cobertura:cobertura -Dtest=JaccardIndexComparatorTests#testEntity -DfailIfNoTests=false
+
+before_deploy:
+- tar -zcvf coverage-result.tar.gz /home/travis/build/leusonmario/elasticsearch-entity-resolution/target/site/cobertura
+
+deploy:
+  provider: releases
+  api_key:
+    secure: "h3eT/0S+MVskUf7UZtwA92tW0kRAYVX/Q56d9cbM7abcLyZWmXu0A6Ya8tSdodCb/6yVDmjPysHSqXISf3liZ2GXeOmuWlLQGheOhRC4I4cbIFLyx2NWEWJvWOk4nAV87+5UcCNpFGX0RDp9Z5IiesFPKGThtAB/7NyhjLV16vBZPJSVmbaflweNubMNc1xPc2nY4kJ/WsH6HyQjpWRDL4PN6itVMykqhLhYIyecpSq7fRl56AHhtgOOx5wARlsGjhhaoWtcF7FztQ1RyLAexRR4LknZpO+LkBZtI8QeYCKvEte+VwIK8xIJWl6NzBXtEMslSDf6Vggoso8lWvrafb2aVjEhkPpPFkkWq+gyYv53il8kirnU/VjeGbOWobbQ0FQhU8teR2LV49aUhz/tPK6AcBd3kXiTAKQVnxRJV2LZfjm8rhviw7heHFEN3fXkBVDWDrJc52vZ3RVNgU27DQ/RPKwwJ3+mI1l7omW9O1d6RMIukDz8HB76N1dDjqn9HUJI/LR6kiCA2UX6Rmu9wL9FHX9H9V5+vIhqnzWzpxkUJdedP9Bx8cqxOfmHR9P4bl4eZDiXF4c1RvYBKmXrpKuwQwPLcgJJumL3OHGTYZ20cwnai4+6S29V5ZIWPsTasaIjPAiLWEjabOiJaQYdvTR6gFMCv62rzt7P+dLEPs8="
+
+
+  file: coverage-result.tar.gz
+  file_glob: true
+  overwrite: true
+  skip_cleanup: true
+  on:
+    tags: true
